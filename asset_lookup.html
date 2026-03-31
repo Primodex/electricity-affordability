@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your State: The New Electricity Squeeze</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0e17;
+    color: #e2e8f0;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 40px 60px;
+  }
+
+  /* ---- Header ---- */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .kicker {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #f59e0b;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    color: #fff;
+  }
+
+  .header h1 span {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header .subtitle {
+    font-size: 17px;
+    color: #94a3b8;
+    max-width: 580px;
+    margin: 0 auto;
+    font-weight: 400;
+  }
+
+  /* ---- State Selector Grid ---- */
+  .selector-wrap {
+    margin-bottom: 36px;
+  }
+
+  .selector-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .state-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .state-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 38px;
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .state-pill:hover {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-color: #334155;
+  }
+
+  .state-pill.active {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff;
+    border-color: transparent;
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+  }
+
+  /* ---- Result Card ---- */
+  .result-area {
+    min-height: 80px;
+  }
+
+  .result-placeholder {
+    text-align: center;
+    padding: 56px 20px;
+    color: #475569;
+    font-size: 15px;
+    border: 2px dashed #1e293b;
+    border-radius: 16px;
+  }
+
+  .result-card {
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 36px 36px 32px;
+    animation: fadeSlideIn 0.35s ease;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .result-state-name {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .verdict-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .verdict-badge.squeeze {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .verdict-badge.keeping-pace {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  .verdict-badge .badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .verdict-badge.squeeze .badge-dot { background: #ef4444; }
+  .verdict-badge.keeping-pace .badge-dot { background: #22c55e; }
+
+  /* ---- Headline Metric ---- */
+  .headline-metric {
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 12px;
+    border: 1px solid #1e293b;
+  }
+
+  .headline-metric .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 6px;
+  }
+
+  .headline-metric .value {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .headline-metric .value.red { color: #f87171; }
+  .headline-metric .value.green { color: #4ade80; }
+
+  .headline-metric .note {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 6px;
+  }
+
+  /* ---- Metrics Grid ---- */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .metric-box {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px 18px;
+  }
+
+  .metric-box .m-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .metric-box .m-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .metric-box .m-detail {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.45;
+  }
+
+  .metric-box .m-detail .up { color: #f87171; }
+  .metric-box .m-detail .down { color: #4ade80; }
+
+  /* ---- Compare Section ---- */
+  .compare-section {
+    padding-top: 24px;
+    border-top: 1px solid #1e293b;
+  }
+
+  .compare-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .compare-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .compare-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .compare-row .cr-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .compare-row .cr-bar-track {
+    height: 10px;
+    background: #1e293b;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .compare-row .cr-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+
+  .compare-row .cr-bar-fill.state-bar {
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
+  }
+
+  .compare-row .cr-avg-marker {
+    position: absolute;
+    top: -4px;
+    width: 2px;
+    height: 18px;
+    background: #e2e8f0;
+    border-radius: 1px;
+    transition: left 0.5s ease;
+  }
+
+  .compare-row .cr-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .compare-row .cr-legend span::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .cr-legend .leg-state::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+  .cr-legend .leg-avg::before { background: #e2e8f0; }
+
+  .rank-line {
+    margin-top: 18px;
+    font-size: 14px;
+    color: #94a3b8;
+    text-align: center;
+    padding: 14px;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 10px;
+    border: 1px solid #1e293b;
+  }
+
+  .rank-line strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .rank-line .rank-num {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ---- Source Footer ---- */
+  .source-footer {
+    text-align: center;
+    padding-top: 32px;
+    margin-top: 40px;
+    border-top: 1px solid #1e293b;
+  }
+
+  .source-footer p {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 768px) {
+    .container { padding: 28px 20px 48px; }
+    .header h1 { font-size: 30px; }
+    .state-pill { width: 46px; height: 34px; font-size: 12px; }
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .result-card { padding: 24px 20px; }
+    .result-state-name { font-size: 26px; }
+    .headline-metric .value { font-size: 36px; }
+  }
+
+  @media (max-width: 480px) {
+    .metrics-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="kicker">Find Your State</div>
+    <h1>How Is <span>Your State</span> Doing?</h1>
+    <p class="subtitle">Select your state to see how electricity affordability has changed over the last decade</p>
+  </div>
+
+  <!-- State Selector -->
+  <div class="selector-wrap">
+    <div class="selector-label">Choose a state</div>
+    <div class="state-grid" id="stateGrid"></div>
+  </div>
+
+  <!-- Result Area -->
+  <div class="result-area" id="resultArea">
+    <div class="result-placeholder">Click a state above to see its electricity affordability report card</div>
+  </div>
+
+  <!-- Source Footer -->
+  <div class="source-footer">
+    <p>Source: U.S. Energy Information Administration, Form EIA-861 (2014 &amp; 2024 residential electricity data); U.S. Census Bureau, American Community Survey (ACS) median household income estimates.<br>Analysis by Payless Power.</p>
+  </div>
+
+</div>
+
+<script>
+const DATA = [{"state":"CA","name":"California","price_2014":16.25,"price_2024":31.97,"price_chg":96.7,"income_2014":61933,"income_2024":100149,"income_chg":61.7,"gap":35.0,"kwh_2014":6741,"kwh_2024":6039,"cost_2014":1095,"cost_2024":1931,"share_2014":1.77,"share_2024":1.93,"share_chg":0.16},{"state":"MA","name":"Massachusetts","price_2014":17.39,"price_2024":29.35,"price_chg":68.8,"income_2014":69160,"income_2024":104828,"income_chg":51.6,"gap":17.2,"kwh_2014":7379,"kwh_2024":6836,"cost_2014":1283,"cost_2024":2006,"share_2014":1.86,"share_2024":1.91,"share_chg":0.06},{"state":"RI","name":"Rhode Island","price_2014":17.17,"price_2024":28.65,"price_chg":66.9,"income_2014":54891,"income_2024":83504,"income_chg":52.1,"gap":14.7,"kwh_2014":6996,"kwh_2024":6802,"cost_2014":1201,"cost_2024":1949,"share_2014":2.19,"share_2024":2.33,"share_chg":0.15},{"state":"WV","name":"West Virginia","price_2014":9.34,"price_2024":15.07,"price_chg":61.4,"income_2014":41059,"income_2024":60798,"income_chg":48.1,"gap":13.3,"kwh_2014":13896,"kwh_2024":12320,"cost_2014":1298,"cost_2024":1857,"share_2014":3.16,"share_2024":3.05,"share_chg":-0.11},{"state":"CT","name":"Connecticut","price_2014":19.75,"price_2024":28.75,"price_chg":45.6,"income_2014":70048,"income_2024":96049,"income_chg":37.1,"gap":8.4,"kwh_2014":8756,"kwh_2024":8335,"cost_2014":1729,"cost_2024":2396,"share_2014":2.47,"share_2024":2.49,"share_chg":0.03},{"state":"ME","name":"Maine","price_2014":15.27,"price_2024":24.29,"price_chg":59.1,"income_2014":49462,"income_2024":76442,"income_chg":54.5,"gap":4.5,"kwh_2014":6593,"kwh_2024":6601,"cost_2014":1007,"cost_2024":1603,"share_2014":2.04,"share_2024":2.1,"share_chg":0.06},{"state":"AK","name":"Alaska","price_2014":19.14,"price_2024":24.82,"price_chg":29.7,"income_2014":71583,"income_2024":95665,"income_chg":33.6,"gap":-4.0,"kwh_2014":7261,"kwh_2024":6939,"cost_2014":1390,"cost_2024":1722,"share_2014":1.94,"share_2024":1.8,"share_chg":-0.14},{"state":"ND","name":"North Dakota","price_2014":9.15,"price_2024":11.51,"price_chg":25.8,"income_2014":59029,"income_2024":77871,"income_chg":31.9,"gap":-6.1,"kwh_2014":14875,"kwh_2024":12344,"cost_2014":1361,"cost_2024":1421,"share_2014":2.31,"share_2024":1.82,"share_chg":-0.48},{"state":"MD","name":"Maryland","price_2014":13.63,"price_2024":17.86,"price_chg":31.0,"income_2014":73971,"income_2024":102905,"income_chg":39.1,"gap":-8.1,"kwh_2014":12299,"kwh_2024":11146,"cost_2014":1676,"cost_2024":1991,"share_2014":2.27,"share_2024":1.93,"share_chg":-0.33},{"state":"IL","name":"Illinois","price_2014":11.91,"price_2024":15.87,"price_chg":33.2,"income_2014":57444,"income_2024":83211,"income_chg":44.9,"gap":-11.6,"kwh_2014":8943,"kwh_2024":8317,"cost_2014":1065,"cost_2024":1320,"share_2014":1.85,"share_2024":1.59,"share_chg":-0.27},{"state":"MI","name":"Michigan","price_2014":14.46,"price_2024":19.3,"price_chg":33.5,"income_2014":49847,"income_2024":72389,"income_chg":45.2,"gap":-11.8,"kwh_2014":7843,"kwh_2024":7419,"cost_2014":1134,"cost_2024":1432,"share_2014":2.28,"share_2024":1.98,"share_chg":-0.3},{"state":"VA","name":"Virginia","price_2014":11.1,"price_2024":14.41,"price_chg":29.8,"income_2014":64902,"income_2024":92090,"income_chg":41.9,"gap":-12.1,"kwh_2014":14058,"kwh_2024":12388,"cost_2014":1560,"cost_2024":1785,"share_2014":2.4,"share_2024":1.94,"share_chg":-0.47},{"state":"PA","name":"Pennsylvania","price_2014":13.32,"price_2024":17.77,"price_chg":33.4,"income_2014":53234,"income_2024":77545,"income_chg":45.7,"gap":-12.3,"kwh_2014":10246,"kwh_2024":9806,"cost_2014":1365,"cost_2024":1743,"share_2014":2.56,"share_2024":2.25,"share_chg":-0.32},{"state":"MN","name":"Minnesota","price_2014":12.01,"price_2024":15.45,"price_chg":28.6,"income_2014":61481,"income_2024":87117,"income_chg":41.7,"gap":-13.1,"kwh_2014":9716,"kwh_2024":8548,"cost_2014":1167,"cost_2024":1321,"share_2014":1.9,"share_2024":1.52,"share_chg":-0.38},{"state":"WY","name":"Wyoming","price_2014":10.5,"price_2024":12.47,"price_chg":18.8,"income_2014":57055,"income_2024":75532,"income_chg":32.4,"gap":-13.6,"kwh_2014":10358,"kwh_2024":10361,"cost_2014":1088,"cost_2024":1292,"share_2014":1.91,"share_2024":1.71,"share_chg":-0.2},{"state":"DC","name":"District of Columbia","price_2014":12.74,"price_2024":17.71,"price_chg":39.0,"income_2014":71648,"income_2024":109707,"income_chg":53.1,"gap":-14.1,"kwh_2014":8657,"kwh_2024":7672,"cost_2014":1103,"cost_2024":1359,"share_2014":1.54,"share_2024":1.24,"share_chg":-0.3},{"state":"LA","name":"Louisiana","price_2014":9.57,"price_2024":11.73,"price_chg":22.6,"income_2014":44555,"income_2024":60986,"income_chg":36.9,"gap":-14.3,"kwh_2014":15497,"kwh_2024":14422,"cost_2014":1483,"cost_2024":1692,"share_2014":3.33,"share_2024":2.77,"share_chg":-0.55},{"state":"NH","name":"New Hampshire","price_2014":17.53,"price_2024":23.4,"price_chg":33.5,"income_2014":66532,"income_2024":99782,"income_chg":50.0,"gap":-16.5,"kwh_2014":7432,"kwh_2024":7428,"cost_2014":1303,"cost_2024":1738,"share_2014":1.96,"share_2024":1.74,"share_chg":-0.22},{"state":"IN","name":"Indiana","price_2014":11.46,"price_2024":14.77,"price_chg":28.9,"income_2014":49446,"income_2024":71959,"income_chg":45.5,"gap":-16.6,"kwh_2014":12103,"kwh_2024":10814,"cost_2014":1387,"cost_2024":1597,"share_2014":2.81,"share_2024":2.22,"share_chg":-0.59},{"state":"OK","name":"Oklahoma","price_2014":10.03,"price_2024":12.24,"price_chg":22.0,"income_2014":47529,"income_2024":66148,"income_chg":39.2,"gap":-17.1,"kwh_2014":13653,"kwh_2024":12949,"cost_2014":1369,"cost_2024":1585,"share_2014":2.88,"share_2024":2.4,"share_chg":-0.49},{"state":"OH","name":"Ohio","price_2014":12.5,"price_2024":15.99,"price_chg":27.9,"income_2014":49308,"income_2024":72212,"income_chg":46.5,"gap":-18.5,"kwh_2014":10816,"kwh_2024":10146,"cost_2014":1352,"cost_2024":1622,"share_2014":2.74,"share_2024":2.25,"share_chg":-0.5},{"state":"IA","name":"Iowa","price_2014":11.16,"price_2024":13.4,"price_chg":20.1,"income_2014":53712,"income_2024":75501,"income_chg":40.6,"gap":-20.5,"kwh_2014":10697,"kwh_2024":9987,"cost_2014":1194,"cost_2024":1338,"share_2014":2.22,"share_2024":1.77,"share_chg":-0.45},{"state":"AR","name":"Arkansas","price_2014":9.51,"price_2024":12.32,"price_chg":29.6,"income_2014":41262,"income_2024":62106,"income_chg":50.5,"gap":-21.0,"kwh_2014":13711,"kwh_2024":12580,"cost_2014":1304,"cost_2024":1550,"share_2014":3.16,"share_2024":2.5,"share_chg":-0.66},{"state":"WI","name":"Wisconsin","price_2014":13.67,"price_2024":17.18,"price_chg":25.7,"income_2014":52622,"income_2024":77488,"income_chg":47.2,"gap":-21.6,"kwh_2014":8332,"kwh_2024":7742,"cost_2014":1139,"cost_2024":1330,"share_2014":2.16,"share_2024":1.72,"share_chg":-0.45},{"state":"DE","name":"Delaware","price_2014":13.29,"price_2024":16.57,"price_chg":24.7,"income_2014":59716,"income_2024":87534,"income_chg":46.6,"gap":-21.9,"kwh_2014":11398,"kwh_2024":10928,"cost_2014":1515,"cost_2024":1811,"share_2014":2.54,"share_2024":2.07,"share_chg":-0.47},{"state":"NJ","name":"New Jersey","price_2014":15.78,"price_2024":19.34,"price_chg":22.6,"income_2014":71919,"income_2024":104294,"income_chg":45.0,"gap":-22.5,"kwh_2014":8036,"kwh_2024":7949,"cost_2014":1268,"cost_2024":1537,"share_2014":1.76,"share_2024":1.47,"share_chg":-0.29},{"state":"AL","name":"Alabama","price_2014":11.48,"price_2024":15.18,"price_chg":32.2,"income_2014":42830,"income_2024":66659,"income_chg":55.6,"gap":-23.4,"kwh_2014":15176,"kwh_2024":13718,"cost_2014":1742,"cost_2024":2082,"share_2014":4.07,"share_2024":3.12,"share_chg":-0.94},{"state":"NY","name":"New York","price_2014":20.07,"price_2024":24.43,"price_chg":21.7,"income_2014":58878,"income_2024":85820,"income_chg":45.8,"gap":-24.0,"kwh_2014":7092,"kwh_2024":6854,"cost_2014":1423,"cost_2024":1674,"share_2014":2.42,"share_2024":1.95,"share_chg":-0.47},{"state":"KY","name":"Kentucky","price_2014":10.16,"price_2024":12.79,"price_chg":25.9,"income_2014":42958,"income_2024":64526,"income_chg":50.2,"gap":-24.3,"kwh_2014":14127,"kwh_2024":12558,"cost_2014":1435,"cost_2024":1606,"share_2014":3.34,"share_2024":2.49,"share_chg":-0.85},{"state":"TX","name":"Texas","price_2014":11.86,"price_2024":14.94,"price_chg":26.0,"income_2014":53035,"income_2024":79721,"income_chg":50.3,"gap":-24.4,"kwh_2014":13897,"kwh_2024":13154,"cost_2014":1648,"cost_2024":1965,"share_2014":3.11,"share_2024":2.47,"share_chg":-0.64},{"state":"WA","name":"Washington","price_2014":8.67,"price_2024":11.9,"price_chg":37.2,"income_2014":61366,"income_2024":99389,"income_chg":62.0,"gap":-24.7,"kwh_2014":12066,"kwh_2024":11465,"cost_2014":1046,"cost_2024":1364,"share_2014":1.7,"share_2024":1.37,"share_chg":-0.33},{"state":"OR","name":"Oregon","price_2014":10.47,"price_2024":14.7,"price_chg":40.4,"income_2014":51075,"income_2024":85220,"income_chg":66.8,"gap":-26.4,"kwh_2014":11154,"kwh_2024":10582,"cost_2014":1168,"cost_2024":1556,"share_2014":2.29,"share_2024":1.83,"share_chg":-0.46},{"state":"MO","name":"Missouri","price_2014":10.64,"price_2024":12.91,"price_chg":21.3,"income_2014":48363,"income_2024":71589,"income_chg":48.0,"gap":-26.7,"kwh_2014":13137,"kwh_2024":12007,"cost_2014":1398,"cost_2024":1550,"share_2014":2.89,"share_2024":2.17,"share_chg":-0.72},{"state":"VT","name":"Vermont","price_2014":17.47,"price_2024":21.9,"price_chg":25.4,"income_2014":54166,"income_2024":82730,"income_chg":52.7,"gap":-27.4,"kwh_2014":6823,"kwh_2024":6884,"cost_2014":1192,"cost_2024":1508,"share_2014":2.2,"share_2024":1.82,"share_chg":-0.38},{"state":"KS","name":"Kansas","price_2014":12.17,"price_2024":14.15,"price_chg":16.3,"income_2014":52504,"income_2024":75514,"income_chg":43.8,"gap":-27.6,"kwh_2014":11136,"kwh_2024":10508,"cost_2014":1355,"cost_2024":1487,"share_2014":2.58,"share_2024":1.97,"share_chg":-0.61},{"state":"SD","name":"South Dakota","price_2014":10.47,"price_2024":12.86,"price_chg":22.8,"income_2014":50979,"income_2024":76881,"income_chg":50.8,"gap":-28.0,"kwh_2014":12547,"kwh_2024":11925,"cost_2014":1314,"cost_2024":1534,"share_2014":2.58,"share_2024":1.99,"share_chg":-0.58},{"state":"HI","name":"Hawaii","price_2014":37.04,"price_2024":42.86,"price_chg":15.7,"income_2014":69592,"income_2024":100745,"income_chg":44.8,"gap":-29.1,"kwh_2014":6077,"kwh_2024":5938,"cost_2014":2251,"cost_2024":2545,"share_2014":3.23,"share_2024":2.53,"share_chg":-0.71},{"state":"MS","name":"Mississippi","price_2014":11.32,"price_2024":13.39,"price_chg":18.3,"income_2014":39680,"income_2024":59127,"income_chg":49.0,"gap":-30.7,"kwh_2014":14975,"kwh_2024":13871,"cost_2014":1695,"cost_2024":1857,"share_2014":4.27,"share_2024":3.14,"share_chg":-1.13},{"state":"NC","name":"North Carolina","price_2014":11.1,"price_2024":14.13,"price_chg":27.3,"income_2014":46556,"income_2024":73958,"income_chg":58.9,"gap":-31.6,"kwh_2014":13629,"kwh_2024":12184,"cost_2014":1513,"cost_2024":1722,"share_2014":3.25,"share_2024":2.33,"share_chg":-0.92},{"state":"NE","name":"Nebraska","price_2014":10.4,"price_2024":11.53,"price_chg":10.9,"income_2014":52686,"income_2024":76376,"income_chg":45.0,"gap":-34.1,"kwh_2014":12268,"kwh_2024":11477,"cost_2014":1276,"cost_2024":1323,"share_2014":2.42,"share_2024":1.73,"share_chg":-0.69},{"state":"NM","name":"New Mexico","price_2014":12.28,"price_2024":14.2,"price_chg":15.6,"income_2014":44803,"income_2024":67816,"income_chg":51.4,"gap":-35.7,"kwh_2014":7601,"kwh_2024":7849,"cost_2014":933,"cost_2024":1115,"share_2014":2.08,"share_2024":1.64,"share_chg":-0.44},{"state":"CO","name":"Colorado","price_2014":12.18,"price_2024":14.92,"price_chg":22.5,"income_2014":61303,"income_2024":97113,"income_chg":58.4,"gap":-35.9,"kwh_2014":8248,"kwh_2024":8091,"cost_2014":1005,"cost_2024":1207,"share_2014":1.64,"share_2024":1.24,"share_chg":-0.4},{"state":"AZ","name":"Arizona","price_2014":11.9,"price_2024":14.91,"price_chg":25.3,"income_2014":50068,"income_2024":81486,"income_chg":62.8,"gap":-37.5,"kwh_2014":12152,"kwh_2024":12899,"cost_2014":1446,"cost_2024":1923,"share_2014":2.89,"share_2024":2.36,"share_chg":-0.53},{"state":"MT","name":"Montana","price_2014":10.18,"price_2024":12.66,"price_chg":24.4,"income_2014":46328,"income_2024":75340,"income_chg":62.6,"gap":-38.3,"kwh_2014":10245,"kwh_2024":10226,"cost_2014":1043,"cost_2024":1295,"share_2014":2.25,"share_2024":1.72,"share_chg":-0.53},{"state":"GA","name":"Georgia","price_2014":11.65,"price_2024":14.08,"price_chg":20.9,"income_2014":49321,"income_2024":79991,"income_chg":62.2,"gap":-41.3,"kwh_2014":13818,"kwh_2024":12888,"cost_2014":1610,"cost_2024":1815,"share_2014":3.26,"share_2024":2.27,"share_chg":-1.0},{"state":"NV","name":"Nevada","price_2014":12.93,"price_2024":15.0,"price_chg":16.0,"income_2014":51450,"income_2024":81134,"income_chg":57.7,"gap":-41.7,"kwh_2014":10730,"kwh_2024":11154,"cost_2014":1387,"cost_2024":1673,"share_2014":2.7,"share_2024":2.06,"share_chg":-0.63},{"state":"TN","name":"Tennessee","price_2014":10.32,"price_2024":12.42,"price_chg":20.4,"income_2014":44361,"income_2024":71997,"income_chg":62.3,"gap":-42.0,"kwh_2014":15430,"kwh_2024":13843,"cost_2014":1592,"cost_2024":1719,"share_2014":3.59,"share_2024":2.39,"share_chg":-1.2},{"state":"UT","name":"Utah","price_2014":10.65,"price_2024":12.22,"price_chg":14.7,"income_2014":60922,"income_2024":96658,"income_chg":58.7,"gap":-43.9,"kwh_2014":8960,"kwh_2024":9290,"cost_2014":954,"cost_2024":1135,"share_2014":1.57,"share_2024":1.17,"share_chg":-0.39},{"state":"FL","name":"Florida","price_2014":11.89,"price_2024":14.14,"price_chg":18.9,"income_2014":47463,"income_2024":77735,"income_chg":63.8,"gap":-44.9,"kwh_2014":13107,"kwh_2024":13250,"cost_2014":1558,"cost_2024":1874,"share_2014":3.28,"share_2024":2.41,"share_chg":-0.87},{"state":"SC","name":"South Carolina","price_2014":12.45,"price_2024":14.23,"price_chg":14.3,"income_2014":45238,"income_2024":72350,"income_chg":59.9,"gap":-45.6,"kwh_2014":14240,"kwh_2024":12605,"cost_2014":1773,"cost_2024":1794,"share_2014":3.92,"share_2024":2.48,"share_chg":-1.44},{"state":"ID","name":"Idaho","price_2014":9.72,"price_2024":11.52,"price_chg":18.5,"income_2014":47861,"income_2024":81166,"income_chg":69.6,"gap":-51.1,"kwh_2014":11785,"kwh_2024":11326,"cost_2014":1146,"cost_2024":1305,"share_2014":2.39,"share_2024":1.61,"share_chg":-0.79}];
+
+// Pre-compute national averages and sorted rank array
+const AVG = {};
+const fields = ['price_2024','income_2024','cost_2024','share_2024','kwh_2024','gap'];
+fields.forEach(f => {
+  AVG[f] = DATA.reduce((s,d) => s + d[f], 0) / DATA.length;
+});
+
+// Sort by gap descending (worst squeeze first) for ranking
+const ranked = [...DATA].sort((a,b) => b.gap - a.gap);
+
+// Build state pills
+const grid = document.getElementById('stateGrid');
+const sorted = [...DATA].sort((a,b) => a.state.localeCompare(b.state));
+sorted.forEach(d => {
+  const btn = document.createElement('button');
+  btn.className = 'state-pill';
+  btn.textContent = d.state;
+  btn.setAttribute('data-state', d.state);
+  btn.addEventListener('click', () => selectState(d.state));
+  grid.appendChild(btn);
+});
+
+function selectState(abbr) {
+  // Update active pill
+  document.querySelectorAll('.state-pill').forEach(p => p.classList.remove('active'));
+  const pill = document.querySelector(`.state-pill[data-state="${abbr}"]`);
+  if (pill) pill.classList.add('active');
+
+  const d = DATA.find(x => x.state === abbr);
+  if (!d) return;
+
+  const squeeze = d.gap > 0;
+  const rank = ranked.findIndex(x => x.state === abbr) + 1;
+  const costDiff = d.cost_2024 - d.cost_2014;
+  const costDir = costDiff >= 0 ? 'up' : 'down';
+  const costDiffAbs = Math.abs(costDiff);
+
+  // Determine max values for bar scaling
+  const maxCost = Math.max(...DATA.map(x => x.cost_2024));
+  const maxShare = Math.max(...DATA.map(x => x.share_2024));
+  const maxPrice = Math.max(...DATA.map(x => x.price_2024));
+
+  const html = `
+    <div class="result-card">
+      <div class="result-top">
+        <div class="result-state-name">${d.name}</div>
+        <div class="verdict-badge ${squeeze ? 'squeeze' : 'keeping-pace'}">
+          <span class="badge-dot"></span>
+          ${squeeze ? 'Electricity Outpacing Income' : 'Income Keeping Pace'}
+        </div>
+      </div>
+
+      <div class="headline-metric">
+        <div class="label">Affordability Gap</div>
+        <div class="value ${squeeze ? 'red' : 'green'}">${d.gap > 0 ? '+' : ''}${d.gap.toFixed(1)} pp</div>
+        <div class="note">${squeeze
+          ? 'Electricity price growth exceeded income growth by ' + d.gap.toFixed(1) + ' percentage points'
+          : 'Income growth outpaced electricity price growth by ' + Math.abs(d.gap).toFixed(1) + ' percentage points'}</div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="m-label">Annual Elec. Cost</div>
+          <div class="m-value">$${d.cost_2024.toLocaleString()}/yr</div>
+          <div class="m-detail"><span class="${costDir}">${costDir === 'up' ? '&#9650;' : '&#9660;'} $${costDiffAbs.toLocaleString()}</span> from $${d.cost_2014.toLocaleString()} in 2014</div>
+        </div>
+        <div class="metric-box">
+          <div class="m-label">Share of Income</div>
+          <div class="m-value">${d.share_2024.toFixed(2)}%</div>
+          <div class="m-detail">of household income goes to electricity (was ${d.share_2014.toFixed(2)}%)</div>
+        </div>
+        <div class="metric-box">
+          <div class="m-label">Price Change</div>
+          <div class="m-value">${d.price_2024.toFixed(1)}&cent;</div>
+          <div class="m-detail">per kWh, up from ${d.price_2014.toFixed(1)}&cent; (<span class="up">+${d.price_chg.toFixed(1)}%</span>)</div>
+        </div>
+        <div class="metric-box">
+          <div class="m-label">Income Change</div>
+          <div class="m-value">$${(d.income_2024/1000).toFixed(0)}K</div>
+          <div class="m-detail">median HH income, up from $${(d.income_2014/1000).toFixed(0)}K (<span class="${d.income_chg >= d.price_chg ? 'down' : 'up'}">+${d.income_chg.toFixed(1)}%</span>)</div>
+        </div>
+        <div class="metric-box">
+          <div class="m-label">Consumption</div>
+          <div class="m-value">${d.kwh_2024.toLocaleString()}</div>
+          <div class="m-detail">kWh/yr (2024), was ${d.kwh_2014.toLocaleString()} in 2014</div>
+        </div>
+        <div class="metric-box">
+          <div class="m-label">Burden Change</div>
+          <div class="m-value">${d.share_chg > 0 ? '+' : ''}${d.share_chg.toFixed(2)} pp</div>
+          <div class="m-detail">${d.share_chg > 0 ? 'Electricity taking a bigger bite' : 'Electricity taking a smaller bite'} of income vs. 2014</div>
+        </div>
+      </div>
+
+      <div class="compare-section">
+        <div class="compare-title">How You Compare</div>
+        <div class="compare-bars">
+          ${makeBar('Annual Cost', d.cost_2024, AVG.cost_2024, maxCost, '$' + d.cost_2024.toLocaleString(), '$' + Math.round(AVG.cost_2024).toLocaleString() + ' avg')}
+          ${makeBar('Income Share', d.share_2024, AVG.share_2024, maxShare, d.share_2024.toFixed(2) + '%', AVG.share_2024.toFixed(2) + '% avg')}
+          ${makeBar('Price per kWh', d.price_2024, AVG.price_2024, maxPrice, d.price_2024.toFixed(1) + '\u00a2', AVG.price_2024.toFixed(1) + '\u00a2 avg')}
+        </div>
+        <div class="rank-line">
+          Affordability rank: <span class="rank-num">#${rank}</span> out of <strong>51</strong> (by gap, where #1 = most squeezed)
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('resultArea').innerHTML = html;
+}
+
+function makeBar(label, stateVal, avgVal, maxVal, stateLabel, avgLabel) {
+  const pctState = Math.min((stateVal / maxVal) * 100, 100);
+  const pctAvg = Math.min((avgVal / maxVal) * 100, 100);
+  return `
+    <div class="compare-row">
+      <div class="cr-label"><span>${label}</span><span>${stateLabel}</span></div>
+      <div class="cr-bar-track">
+        <div class="cr-bar-fill state-bar" style="width:${pctState}%"></div>
+        <div class="cr-avg-marker" style="left:${pctAvg}%"></div>
+      </div>
+      <div class="cr-legend">
+        <span class="leg-state">Your state</span>
+        <span class="leg-avg">National avg (${avgLabel})</span>
+      </div>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>

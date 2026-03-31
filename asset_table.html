@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Electricity Squeeze: State Rankings</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #ffffff;
+    color: #1e293b;
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 36px 24px 48px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .header h1 {
+    font-size: clamp(22px, 3.2vw, 32px);
+    font-weight: 800;
+    line-height: 1.2;
+    color: #0f172a;
+    margin-bottom: 8px;
+  }
+
+  .header .subtitle {
+    font-size: 15px;
+    color: #64748b;
+    max-width: 680px;
+    line-height: 1.55;
+    margin-bottom: 4px;
+  }
+
+  .header .period {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    position: relative;
+    flex: 0 1 240px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    color: #334155;
+    background: #f8fafc;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-box input:focus {
+    border-color: #94a3b8;
+    background: #fff;
+  }
+
+  .search-box::before {
+    content: '\1F50D';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .pager {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .pager button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #fff;
+    color: #475569;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+  }
+
+  .pager button:hover:not(:disabled) { background: #f1f5f9; }
+  .pager button:disabled { opacity: 0.3; cursor: default; }
+
+  .pager .page-input {
+    width: 36px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 4px 2px;
+    font-family: inherit;
+    font-size: 13px;
+    color: #334155;
+  }
+
+  /* Table */
+  .table-wrap {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 11px 14px;
+    border-bottom: 2px solid #2d2b55;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    text-align: right;
+  }
+
+  thead th:first-child { text-align: center; width: 48px; }
+  thead th:nth-child(2) { text-align: left; }
+  thead th:nth-child(3) { text-align: left; min-width: 240px; }
+
+  thead th:hover { color: #334155; }
+
+  thead th .arrow {
+    margin-left: 4px;
+    font-size: 9px;
+    opacity: 0.25;
+  }
+
+  thead th.sorted .arrow {
+    opacity: 1;
+    color: #2d2b55;
+  }
+
+  /* Section header rows */
+  .section-row td {
+    padding: 14px 14px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-bottom: none;
+    background: #fff;
+  }
+
+  .section-row.squeeze-section td { color: #dc2626; }
+  .section-row.pace-section td { color: #64748b; }
+
+  tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.1s;
+  }
+
+  tbody tr:hover { background: #f8fafc; }
+
+  tbody tr.squeeze {
+    background: rgba(239, 68, 68, 0.04);
+  }
+
+  tbody tr.squeeze:hover {
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  td {
+    padding: 9px 14px;
+    text-align: right;
+    color: #475569;
+    white-space: nowrap;
+  }
+
+  td:first-child {
+    text-align: center;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  td:nth-child(2) {
+    text-align: left;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  /* Gap bar cell */
+  td:nth-child(3) {
+    text-align: left;
+    padding-right: 18px;
+  }
+
+  .bar-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bar-value {
+    width: 70px;
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .bar-value.pos { color: #dc2626; }
+  .bar-value.neg { color: #64748b; }
+
+  .bar-track {
+    flex: 1;
+    height: 13px;
+    position: relative;
+    border-radius: 3px;
+    background: #e9ecf1;
+  }
+
+  .bar-fill {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .bar-fill.red {
+    background: linear-gradient(90deg, #dc2626, #ef4444);
+    left: 0;
+  }
+
+  .bar-fill.gray {
+    background: #94a3b8;
+    left: 0;
+  }
+
+  /* Burden shift colors */
+  .burden-up { color: #dc2626; font-weight: 600; }
+  .burden-down { color: #16a34a; font-weight: 600; }
+
+  /* Sources */
+  .sources {
+    font-size: 11px;
+    color: #94a3b8;
+    line-height: 1.6;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 16px;
+  }
+
+  .sources strong { color: #64748b; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    table { font-size: 12px; }
+    td, thead th { padding: 8px 10px; }
+    .bar-value { width: 58px; font-size: 12px; }
+    thead th:nth-child(3) { min-width: 150px; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-box { flex: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>The Best and Worst States for Electricity Affordability</h1>
+    <p class="subtitle">In 45 states, electricity became more affordable over the last decade. In six, it didn't&mdash;costs climbed faster than paychecks, taking a bigger bite out of household income.</p>
+    <p class="period">2014&ndash;2024 &middot; Click any column to re-sort</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+    <div class="pager">
+      <button id="prevBtn" aria-label="Previous page">&lsaquo;</button>
+      <input type="text" class="page-input" id="pageInput" value="1"> / <span id="totalPages">1</span>
+      <button id="nextBtn" aria-label="Next page">&rsaquo;</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="rankTable">
+      <thead>
+        <tr>
+          <th data-col="rank">Rank<span class="arrow">&#9650;</span></th>
+          <th data-col="name">State<span class="arrow">&#9650;</span></th>
+          <th data-col="gap">Affordability Gap<span class="arrow">&#9650;</span></th>
+          <th data-col="cost_2024">Annual Cost<span class="arrow">&#9650;</span></th>
+          <th data-col="share_chg">10-Yr Burden Shift<span class="arrow">&#9650;</span></th>
+        </tr>
+      </thead>
+      <tbody id="rankBody"></tbody>
+    </table>
+  </div>
+
+  <div class="sources">
+    <strong>Source:</strong> U.S. Energy Information Administration, Form EIA-861; U.S. Census Bureau, American Community Survey 1-Year Estimates. Period: 2014&ndash;2024. Affordability gap&nbsp;= electricity price % change &minus; income % change. 10-yr burden shift&nbsp;= change in electricity&rsquo;s share of household income (percentage points).
+  </div>
+</div>
+
+<script>
+const DATA = [
+  {"state":"CA","name":"California","gap":35.0,"cost_2024":1931,"share_chg":0.16},
+  {"state":"MA","name":"Massachusetts","gap":17.2,"cost_2024":2006,"share_chg":0.06},
+  {"state":"RI","name":"Rhode Island","gap":14.7,"cost_2024":1949,"share_chg":0.15},
+  {"state":"WV","name":"West Virginia","gap":13.3,"cost_2024":1857,"share_chg":-0.11},
+  {"state":"CT","name":"Connecticut","gap":8.4,"cost_2024":2396,"share_chg":0.03},
+  {"state":"ME","name":"Maine","gap":4.5,"cost_2024":1603,"share_chg":0.06},
+  {"state":"AK","name":"Alaska","gap":-4.0,"cost_2024":1722,"share_chg":-0.14},
+  {"state":"ND","name":"North Dakota","gap":-6.1,"cost_2024":1421,"share_chg":-0.48},
+  {"state":"MD","name":"Maryland","gap":-8.1,"cost_2024":1991,"share_chg":-0.33},
+  {"state":"IL","name":"Illinois","gap":-11.6,"cost_2024":1320,"share_chg":-0.27},
+  {"state":"MI","name":"Michigan","gap":-11.8,"cost_2024":1432,"share_chg":-0.30},
+  {"state":"VA","name":"Virginia","gap":-12.1,"cost_2024":1785,"share_chg":-0.47},
+  {"state":"PA","name":"Pennsylvania","gap":-12.3,"cost_2024":1743,"share_chg":-0.32},
+  {"state":"MN","name":"Minnesota","gap":-13.1,"cost_2024":1321,"share_chg":-0.38},
+  {"state":"WY","name":"Wyoming","gap":-13.6,"cost_2024":1292,"share_chg":-0.20},
+  {"state":"DC","name":"District of Columbia","gap":-14.1,"cost_2024":1359,"share_chg":-0.30},
+  {"state":"LA","name":"Louisiana","gap":-14.3,"cost_2024":1692,"share_chg":-0.55},
+  {"state":"NH","name":"New Hampshire","gap":-16.5,"cost_2024":1738,"share_chg":-0.22},
+  {"state":"IN","name":"Indiana","gap":-16.6,"cost_2024":1597,"share_chg":-0.59},
+  {"state":"OK","name":"Oklahoma","gap":-17.1,"cost_2024":1585,"share_chg":-0.49},
+  {"state":"OH","name":"Ohio","gap":-18.5,"cost_2024":1622,"share_chg":-0.50},
+  {"state":"IA","name":"Iowa","gap":-20.5,"cost_2024":1338,"share_chg":-0.45},
+  {"state":"AR","name":"Arkansas","gap":-21.0,"cost_2024":1550,"share_chg":-0.66},
+  {"state":"WI","name":"Wisconsin","gap":-21.6,"cost_2024":1330,"share_chg":-0.45},
+  {"state":"DE","name":"Delaware","gap":-21.9,"cost_2024":1811,"share_chg":-0.47},
+  {"state":"NJ","name":"New Jersey","gap":-22.5,"cost_2024":1537,"share_chg":-0.29},
+  {"state":"AL","name":"Alabama","gap":-23.4,"cost_2024":2082,"share_chg":-0.94},
+  {"state":"NY","name":"New York","gap":-24.0,"cost_2024":1674,"share_chg":-0.47},
+  {"state":"KY","name":"Kentucky","gap":-24.3,"cost_2024":1606,"share_chg":-0.85},
+  {"state":"TX","name":"Texas","gap":-24.4,"cost_2024":1965,"share_chg":-0.64},
+  {"state":"WA","name":"Washington","gap":-24.7,"cost_2024":1364,"share_chg":-0.33},
+  {"state":"OR","name":"Oregon","gap":-26.4,"cost_2024":1556,"share_chg":-0.46},
+  {"state":"MO","name":"Missouri","gap":-26.7,"cost_2024":1550,"share_chg":-0.72},
+  {"state":"VT","name":"Vermont","gap":-27.4,"cost_2024":1508,"share_chg":-0.38},
+  {"state":"KS","name":"Kansas","gap":-27.6,"cost_2024":1487,"share_chg":-0.61},
+  {"state":"SD","name":"South Dakota","gap":-28.0,"cost_2024":1534,"share_chg":-0.58},
+  {"state":"HI","name":"Hawaii","gap":-29.1,"cost_2024":2545,"share_chg":-0.71},
+  {"state":"MS","name":"Mississippi","gap":-30.7,"cost_2024":1857,"share_chg":-1.13},
+  {"state":"NC","name":"North Carolina","gap":-31.6,"cost_2024":1722,"share_chg":-0.92},
+  {"state":"NE","name":"Nebraska","gap":-34.1,"cost_2024":1323,"share_chg":-0.69},
+  {"state":"NM","name":"New Mexico","gap":-35.7,"cost_2024":1115,"share_chg":-0.44},
+  {"state":"CO","name":"Colorado","gap":-35.9,"cost_2024":1207,"share_chg":-0.40},
+  {"state":"AZ","name":"Arizona","gap":-37.5,"cost_2024":1923,"share_chg":-0.53},
+  {"state":"MT","name":"Montana","gap":-38.3,"cost_2024":1295,"share_chg":-0.53},
+  {"state":"GA","name":"Georgia","gap":-41.3,"cost_2024":1815,"share_chg":-1.00},
+  {"state":"NV","name":"Nevada","gap":-41.7,"cost_2024":1673,"share_chg":-0.63},
+  {"state":"TN","name":"Tennessee","gap":-42.0,"cost_2024":1719,"share_chg":-1.20},
+  {"state":"UT","name":"Utah","gap":-43.9,"cost_2024":1135,"share_chg":-0.39},
+  {"state":"FL","name":"Florida","gap":-44.9,"cost_2024":1874,"share_chg":-0.87},
+  {"state":"SC","name":"South Carolina","gap":-45.6,"cost_2024":1794,"share_chg":-1.44},
+  {"state":"ID","name":"Idaho","gap":-51.1,"cost_2024":1305,"share_chg":-0.79}
+];
+
+const MAX_GAP = 51.1;
+const PER_PAGE = 20;
+
+let currentSort = { col: 'gap', dir: 'desc' };
+let currentPage = 1;
+let searchTerm = '';
+
+function getFilteredSorted() {
+  let list = DATA;
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(d => d.name.toLowerCase().includes(q) || d.state.toLowerCase().includes(q));
+  }
+  const { col, dir } = currentSort;
+  return [...list].sort((a, b) => {
+    let va, vb;
+    if (col === 'rank') { va = a.gap; vb = b.gap; return vb - va; }
+    if (col === 'name') { va = a.name; vb = b.name; }
+    else { va = a[col]; vb = b[col]; }
+    if (typeof va === 'string') return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    return dir === 'asc' ? va - vb : vb - va;
+  });
+}
+
+function render() {
+  const { col, dir } = currentSort;
+  const sorted = getFilteredSorted();
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * PER_PAGE;
+  const page = sorted.slice(start, start + PER_PAGE);
+
+  const isDefaultSort = col === 'gap' && dir === 'desc' && !searchTerm;
+
+  // Global rank map
+  const gapDesc = [...DATA].sort((a, b) => b.gap - a.gap);
+  const rankMap = {};
+  gapDesc.forEach((d, i) => rankMap[d.state] = i + 1);
+
+  let html = '';
+  let lastWasSqueeze = null;
+
+  page.forEach((d) => {
+    const globalRank = rankMap[d.state];
+    const sq = d.gap > 0;
+
+    if (isDefaultSort) {
+      if (lastWasSqueeze === null && sq) {
+        html += `<tr class="section-row squeeze-section"><td colspan="5">Electricity outpacing income (${DATA.filter(x => x.gap > 0).length} states)</td></tr>`;
+      }
+      if (lastWasSqueeze !== false && !sq) {
+        html += `<tr class="section-row pace-section"><td colspan="5">Income keeping pace or ahead (${DATA.filter(x => x.gap <= 0).length} states)</td></tr>`;
+      }
+      lastWasSqueeze = sq;
+    }
+
+    const sign = d.gap > 0 ? '+' : '';
+    const valClass = d.gap > 0 ? 'pos' : 'neg';
+    const barPct = Math.min(100, (Math.abs(d.gap) / MAX_GAP) * 100);
+    const barClass = d.gap > 0 ? 'red' : 'gray';
+    const burdenClass = d.share_chg > 0 ? 'burden-up' : 'burden-down';
+    const burdenSign = d.share_chg > 0 ? '+' : '';
+
+    html += `<tr class="${sq ? 'squeeze' : ''}">
+      <td>${globalRank}</td>
+      <td>${d.name}</td>
+      <td>
+        <div class="bar-cell">
+          <span class="bar-value ${valClass}">${sign}${d.gap.toFixed(1)} pp</span>
+          <span class="bar-track"><span class="bar-fill ${barClass}" style="width:${barPct}%"></span></span>
+        </div>
+      </td>
+      <td>$${d.cost_2024.toLocaleString()}</td>
+      <td class="${burdenClass}">${burdenSign}${d.share_chg.toFixed(2)} pp</td>
+    </tr>`;
+  });
+
+  document.getElementById('rankBody').innerHTML = html;
+
+  document.getElementById('totalPages').textContent = totalPages;
+  document.getElementById('pageInput').value = currentPage;
+  document.getElementById('prevBtn').disabled = currentPage <= 1;
+  document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+
+  document.querySelectorAll('#rankTable thead th').forEach(th => {
+    th.classList.remove('sorted');
+    const arr = th.querySelector('.arrow');
+    if (arr) arr.innerHTML = '&#9650;';
+    if (th.dataset.col === col) {
+      th.classList.add('sorted');
+      if (arr) arr.innerHTML = dir === 'asc' ? '&#9650;' : '&#9660;';
+    }
+  });
+}
+
+document.querySelectorAll('#rankTable thead th').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (currentSort.col === col) {
+      currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
+    } else {
+      currentSort.col = col;
+      currentSort.dir = col === 'name' ? 'asc' : 'desc';
+    }
+    currentPage = 1;
+    render();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchTerm = e.target.value.trim();
+  currentPage = 1;
+  render();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => { if (currentPage > 1) { currentPage--; render(); } });
+document.getElementById('nextBtn').addEventListener('click', () => { currentPage++; render(); });
+document.getElementById('pageInput').addEventListener('change', (e) => {
+  const v = parseInt(e.target.value, 10);
+  const totalPages = Math.max(1, Math.ceil(getFilteredSorted().length / PER_PAGE));
+  if (v >= 1 && v <= totalPages) { currentPage = v; render(); }
+  else { e.target.value = currentPage; }
+});
+
+render();
+</script>
+</body>
+</html>
