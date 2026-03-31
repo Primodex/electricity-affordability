@@ -16,7 +16,7 @@
   }
 
   .container {
-    max-width: 880px;
+    max-width: 1060px;
     margin: 0 auto;
     padding: 36px 24px 48px;
   }
@@ -327,9 +327,10 @@
         <tr>
           <th data-col="rank">Rank<span class="arrow">&#9650;</span></th>
           <th data-col="name">State<span class="arrow">&#9650;</span></th>
-          <th data-col="gap">Affordability Gap<span class="arrow">&#9650;</span></th>
-          <th data-col="cost_2024">Annual Cost<span class="arrow">&#9650;</span></th>
-          <th data-col="share_chg">10-Yr Burden Shift<span class="arrow">&#9650;</span></th>
+          <th data-col="gap">Price Growth vs. Income Growth<span class="arrow">&#9650;</span></th>
+          <th data-col="cost_2024">Avg. Annual Electric Bill (2024)<span class="arrow">&#9650;</span></th>
+          <th data-col="income_2024">Median Household Income (2024)<span class="arrow">&#9650;</span></th>
+          <th data-col="share_chg">Change in Electricity Burden (2014&ndash;2024)<span class="arrow">&#9650;</span></th>
         </tr>
       </thead>
       <tbody id="rankBody"></tbody>
@@ -337,63 +338,63 @@
   </div>
 
   <div class="sources">
-    <strong>Source:</strong> U.S. Energy Information Administration, Form EIA-861; U.S. Census Bureau, American Community Survey 1-Year Estimates. Period: 2014&ndash;2024. Affordability gap&nbsp;= electricity price % change &minus; income % change. 10-yr burden shift&nbsp;= change in electricity&rsquo;s share of household income (percentage points).
+    <strong>Source:</strong> U.S. Energy Information Administration, Form EIA-861; U.S. Census Bureau, American Community Survey 1-Year Estimates (Table B19013). Period: 2014&ndash;2024. Price growth vs. income growth&nbsp;= electricity price % change &minus; median household income % change (percentage points). Electricity burden&nbsp;= annual electric bill &divide; median household income.
   </div>
 </div>
 
 <script>
 const DATA = [
-  {"state":"CA","name":"California","gap":35.0,"cost_2024":1931,"share_chg":0.16},
-  {"state":"MA","name":"Massachusetts","gap":17.2,"cost_2024":2006,"share_chg":0.06},
-  {"state":"RI","name":"Rhode Island","gap":14.7,"cost_2024":1949,"share_chg":0.15},
-  {"state":"WV","name":"West Virginia","gap":13.3,"cost_2024":1857,"share_chg":-0.11},
-  {"state":"CT","name":"Connecticut","gap":8.4,"cost_2024":2396,"share_chg":0.03},
-  {"state":"ME","name":"Maine","gap":4.5,"cost_2024":1603,"share_chg":0.06},
-  {"state":"AK","name":"Alaska","gap":-4.0,"cost_2024":1722,"share_chg":-0.14},
-  {"state":"ND","name":"North Dakota","gap":-6.1,"cost_2024":1421,"share_chg":-0.48},
-  {"state":"MD","name":"Maryland","gap":-8.1,"cost_2024":1991,"share_chg":-0.33},
-  {"state":"IL","name":"Illinois","gap":-11.6,"cost_2024":1320,"share_chg":-0.27},
-  {"state":"MI","name":"Michigan","gap":-11.8,"cost_2024":1432,"share_chg":-0.30},
-  {"state":"VA","name":"Virginia","gap":-12.1,"cost_2024":1785,"share_chg":-0.47},
-  {"state":"PA","name":"Pennsylvania","gap":-12.3,"cost_2024":1743,"share_chg":-0.32},
-  {"state":"MN","name":"Minnesota","gap":-13.1,"cost_2024":1321,"share_chg":-0.38},
-  {"state":"WY","name":"Wyoming","gap":-13.6,"cost_2024":1292,"share_chg":-0.20},
-  {"state":"DC","name":"District of Columbia","gap":-14.1,"cost_2024":1359,"share_chg":-0.30},
-  {"state":"LA","name":"Louisiana","gap":-14.3,"cost_2024":1692,"share_chg":-0.55},
-  {"state":"NH","name":"New Hampshire","gap":-16.5,"cost_2024":1738,"share_chg":-0.22},
-  {"state":"IN","name":"Indiana","gap":-16.6,"cost_2024":1597,"share_chg":-0.59},
-  {"state":"OK","name":"Oklahoma","gap":-17.1,"cost_2024":1585,"share_chg":-0.49},
-  {"state":"OH","name":"Ohio","gap":-18.5,"cost_2024":1622,"share_chg":-0.50},
-  {"state":"IA","name":"Iowa","gap":-20.5,"cost_2024":1338,"share_chg":-0.45},
-  {"state":"AR","name":"Arkansas","gap":-21.0,"cost_2024":1550,"share_chg":-0.66},
-  {"state":"WI","name":"Wisconsin","gap":-21.6,"cost_2024":1330,"share_chg":-0.45},
-  {"state":"DE","name":"Delaware","gap":-21.9,"cost_2024":1811,"share_chg":-0.47},
-  {"state":"NJ","name":"New Jersey","gap":-22.5,"cost_2024":1537,"share_chg":-0.29},
-  {"state":"AL","name":"Alabama","gap":-23.4,"cost_2024":2082,"share_chg":-0.94},
-  {"state":"NY","name":"New York","gap":-24.0,"cost_2024":1674,"share_chg":-0.47},
-  {"state":"KY","name":"Kentucky","gap":-24.3,"cost_2024":1606,"share_chg":-0.85},
-  {"state":"TX","name":"Texas","gap":-24.4,"cost_2024":1965,"share_chg":-0.64},
-  {"state":"WA","name":"Washington","gap":-24.7,"cost_2024":1364,"share_chg":-0.33},
-  {"state":"OR","name":"Oregon","gap":-26.4,"cost_2024":1556,"share_chg":-0.46},
-  {"state":"MO","name":"Missouri","gap":-26.7,"cost_2024":1550,"share_chg":-0.72},
-  {"state":"VT","name":"Vermont","gap":-27.4,"cost_2024":1508,"share_chg":-0.38},
-  {"state":"KS","name":"Kansas","gap":-27.6,"cost_2024":1487,"share_chg":-0.61},
-  {"state":"SD","name":"South Dakota","gap":-28.0,"cost_2024":1534,"share_chg":-0.58},
-  {"state":"HI","name":"Hawaii","gap":-29.1,"cost_2024":2545,"share_chg":-0.71},
-  {"state":"MS","name":"Mississippi","gap":-30.7,"cost_2024":1857,"share_chg":-1.13},
-  {"state":"NC","name":"North Carolina","gap":-31.6,"cost_2024":1722,"share_chg":-0.92},
-  {"state":"NE","name":"Nebraska","gap":-34.1,"cost_2024":1323,"share_chg":-0.69},
-  {"state":"NM","name":"New Mexico","gap":-35.7,"cost_2024":1115,"share_chg":-0.44},
-  {"state":"CO","name":"Colorado","gap":-35.9,"cost_2024":1207,"share_chg":-0.40},
-  {"state":"AZ","name":"Arizona","gap":-37.5,"cost_2024":1923,"share_chg":-0.53},
-  {"state":"MT","name":"Montana","gap":-38.3,"cost_2024":1295,"share_chg":-0.53},
-  {"state":"GA","name":"Georgia","gap":-41.3,"cost_2024":1815,"share_chg":-1.00},
-  {"state":"NV","name":"Nevada","gap":-41.7,"cost_2024":1673,"share_chg":-0.63},
-  {"state":"TN","name":"Tennessee","gap":-42.0,"cost_2024":1719,"share_chg":-1.20},
-  {"state":"UT","name":"Utah","gap":-43.9,"cost_2024":1135,"share_chg":-0.39},
-  {"state":"FL","name":"Florida","gap":-44.9,"cost_2024":1874,"share_chg":-0.87},
-  {"state":"SC","name":"South Carolina","gap":-45.6,"cost_2024":1794,"share_chg":-1.44},
-  {"state":"ID","name":"Idaho","gap":-51.1,"cost_2024":1305,"share_chg":-0.79}
+  {"state":"CA","name":"California","gap":35.0,"cost_2024":1931,"income_2024":100149,"share_chg":0.16},
+  {"state":"MA","name":"Massachusetts","gap":17.2,"cost_2024":2006,"income_2024":104828,"share_chg":0.06},
+  {"state":"RI","name":"Rhode Island","gap":14.7,"cost_2024":1949,"income_2024":83504,"share_chg":0.15},
+  {"state":"WV","name":"West Virginia","gap":13.3,"cost_2024":1857,"income_2024":60798,"share_chg":-0.11},
+  {"state":"CT","name":"Connecticut","gap":8.4,"cost_2024":2396,"income_2024":96049,"share_chg":0.03},
+  {"state":"ME","name":"Maine","gap":4.5,"cost_2024":1603,"income_2024":76442,"share_chg":0.06},
+  {"state":"AK","name":"Alaska","gap":-4.0,"cost_2024":1722,"income_2024":95665,"share_chg":-0.14},
+  {"state":"ND","name":"North Dakota","gap":-6.1,"cost_2024":1421,"income_2024":77871,"share_chg":-0.48},
+  {"state":"MD","name":"Maryland","gap":-8.1,"cost_2024":1991,"income_2024":102905,"share_chg":-0.33},
+  {"state":"IL","name":"Illinois","gap":-11.6,"cost_2024":1320,"income_2024":83211,"share_chg":-0.27},
+  {"state":"MI","name":"Michigan","gap":-11.8,"cost_2024":1432,"income_2024":72389,"share_chg":-0.30},
+  {"state":"VA","name":"Virginia","gap":-12.1,"cost_2024":1785,"income_2024":92090,"share_chg":-0.47},
+  {"state":"PA","name":"Pennsylvania","gap":-12.3,"cost_2024":1743,"income_2024":77545,"share_chg":-0.32},
+  {"state":"MN","name":"Minnesota","gap":-13.1,"cost_2024":1321,"income_2024":87117,"share_chg":-0.38},
+  {"state":"WY","name":"Wyoming","gap":-13.6,"cost_2024":1292,"income_2024":75532,"share_chg":-0.20},
+  {"state":"DC","name":"District of Columbia","gap":-14.1,"cost_2024":1359,"income_2024":109707,"share_chg":-0.30},
+  {"state":"LA","name":"Louisiana","gap":-14.3,"cost_2024":1692,"income_2024":60986,"share_chg":-0.55},
+  {"state":"NH","name":"New Hampshire","gap":-16.5,"cost_2024":1738,"income_2024":99782,"share_chg":-0.22},
+  {"state":"IN","name":"Indiana","gap":-16.6,"cost_2024":1597,"income_2024":71959,"share_chg":-0.59},
+  {"state":"OK","name":"Oklahoma","gap":-17.1,"cost_2024":1585,"income_2024":66148,"share_chg":-0.49},
+  {"state":"OH","name":"Ohio","gap":-18.5,"cost_2024":1622,"income_2024":72212,"share_chg":-0.50},
+  {"state":"IA","name":"Iowa","gap":-20.5,"cost_2024":1338,"income_2024":75501,"share_chg":-0.45},
+  {"state":"AR","name":"Arkansas","gap":-21.0,"cost_2024":1550,"income_2024":62106,"share_chg":-0.66},
+  {"state":"WI","name":"Wisconsin","gap":-21.6,"cost_2024":1330,"income_2024":77488,"share_chg":-0.45},
+  {"state":"DE","name":"Delaware","gap":-21.9,"cost_2024":1811,"income_2024":87534,"share_chg":-0.47},
+  {"state":"NJ","name":"New Jersey","gap":-22.5,"cost_2024":1537,"income_2024":104294,"share_chg":-0.29},
+  {"state":"AL","name":"Alabama","gap":-23.4,"cost_2024":2082,"income_2024":66659,"share_chg":-0.94},
+  {"state":"NY","name":"New York","gap":-24.0,"cost_2024":1674,"income_2024":85820,"share_chg":-0.47},
+  {"state":"KY","name":"Kentucky","gap":-24.3,"cost_2024":1606,"income_2024":64526,"share_chg":-0.85},
+  {"state":"TX","name":"Texas","gap":-24.4,"cost_2024":1965,"income_2024":79721,"share_chg":-0.64},
+  {"state":"WA","name":"Washington","gap":-24.7,"cost_2024":1364,"income_2024":99389,"share_chg":-0.33},
+  {"state":"OR","name":"Oregon","gap":-26.4,"cost_2024":1556,"income_2024":85220,"share_chg":-0.46},
+  {"state":"MO","name":"Missouri","gap":-26.7,"cost_2024":1550,"income_2024":71589,"share_chg":-0.72},
+  {"state":"VT","name":"Vermont","gap":-27.4,"cost_2024":1508,"income_2024":82730,"share_chg":-0.38},
+  {"state":"KS","name":"Kansas","gap":-27.6,"cost_2024":1487,"income_2024":75514,"share_chg":-0.61},
+  {"state":"SD","name":"South Dakota","gap":-28.0,"cost_2024":1534,"income_2024":76881,"share_chg":-0.58},
+  {"state":"HI","name":"Hawaii","gap":-29.1,"cost_2024":2545,"income_2024":100745,"share_chg":-0.71},
+  {"state":"MS","name":"Mississippi","gap":-30.7,"cost_2024":1857,"income_2024":59127,"share_chg":-1.13},
+  {"state":"NC","name":"North Carolina","gap":-31.6,"cost_2024":1722,"income_2024":73958,"share_chg":-0.92},
+  {"state":"NE","name":"Nebraska","gap":-34.1,"cost_2024":1323,"income_2024":76376,"share_chg":-0.69},
+  {"state":"NM","name":"New Mexico","gap":-35.7,"cost_2024":1115,"income_2024":67816,"share_chg":-0.44},
+  {"state":"CO","name":"Colorado","gap":-35.9,"cost_2024":1207,"income_2024":97113,"share_chg":-0.40},
+  {"state":"AZ","name":"Arizona","gap":-37.5,"cost_2024":1923,"income_2024":81486,"share_chg":-0.53},
+  {"state":"MT","name":"Montana","gap":-38.3,"cost_2024":1295,"income_2024":75340,"share_chg":-0.53},
+  {"state":"GA","name":"Georgia","gap":-41.3,"cost_2024":1815,"income_2024":79991,"share_chg":-1.00},
+  {"state":"NV","name":"Nevada","gap":-41.7,"cost_2024":1673,"income_2024":81134,"share_chg":-0.63},
+  {"state":"TN","name":"Tennessee","gap":-42.0,"cost_2024":1719,"income_2024":71997,"share_chg":-1.20},
+  {"state":"UT","name":"Utah","gap":-43.9,"cost_2024":1135,"income_2024":96658,"share_chg":-0.39},
+  {"state":"FL","name":"Florida","gap":-44.9,"cost_2024":1874,"income_2024":77735,"share_chg":-0.87},
+  {"state":"SC","name":"South Carolina","gap":-45.6,"cost_2024":1794,"income_2024":72350,"share_chg":-1.44},
+  {"state":"ID","name":"Idaho","gap":-51.1,"cost_2024":1305,"income_2024":81166,"share_chg":-0.79}
 ];
 
 const MAX_GAP = 51.1;
@@ -445,10 +446,10 @@ function render() {
 
     if (isDefaultSort) {
       if (lastWasSqueeze === null && sq) {
-        html += `<tr class="section-row squeeze-section"><td colspan="5">Electricity outpacing income (${DATA.filter(x => x.gap > 0).length} states)</td></tr>`;
+        html += `<tr class="section-row squeeze-section"><td colspan="6">Electricity outpacing income (${DATA.filter(x => x.gap > 0).length} states)</td></tr>`;
       }
       if (lastWasSqueeze !== false && !sq) {
-        html += `<tr class="section-row pace-section"><td colspan="5">Income keeping pace or ahead (${DATA.filter(x => x.gap <= 0).length} states)</td></tr>`;
+        html += `<tr class="section-row pace-section"><td colspan="6">Income keeping pace or ahead (${DATA.filter(x => x.gap <= 0).length} states)</td></tr>`;
       }
       lastWasSqueeze = sq;
     }
@@ -470,6 +471,7 @@ function render() {
         </div>
       </td>
       <td>$${d.cost_2024.toLocaleString()}</td>
+      <td>$${d.income_2024.toLocaleString()}</td>
       <td class="${burdenClass}">${burdenSign}${d.share_chg.toFixed(2)} pp</td>
     </tr>`;
   });
