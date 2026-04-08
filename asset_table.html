@@ -158,7 +158,8 @@
   table {
     width: 100%;
     min-width: 860px;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 14px;
   }
 
@@ -180,8 +181,50 @@
     text-align: right;
   }
 
+  /* Sticky first two columns */
+  thead th:first-child,
+  tbody td:first-child,
+  .section-row td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+  }
+
+  thead th:nth-child(2),
+  tbody td:nth-child(2) {
+    position: sticky;
+    left: 48px;
+    z-index: 3;
+  }
+
+  /* Backgrounds for sticky columns to cover scrolled content */
+  thead th:first-child,
+  thead th:nth-child(2) { z-index: 4; }
+
+  tbody tr td:first-child,
+  tbody tr td:nth-child(2) { background: #fff; }
+  tbody tr:hover td:first-child,
+  tbody tr:hover td:nth-child(2) { background: #f8fafc; }
+  tbody tr.squeeze td:first-child,
+  tbody tr.squeeze td:nth-child(2) { background: #fef2f2; }
+  tbody tr.squeeze:hover td:first-child,
+  tbody tr.squeeze:hover td:nth-child(2) { background: #fde8e8; }
+
+  /* Shadow on sticky edge */
+  tbody td:nth-child(2)::after,
+  thead th:nth-child(2)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -6px;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
+    pointer-events: none;
+  }
+
   thead th:first-child { text-align: center; width: 48px; }
-  thead th:nth-child(2) { text-align: left; }
+  thead th:nth-child(2) { text-align: left; position: sticky; left: 48px; }
   thead th:nth-child(3) { text-align: left; min-width: 240px; }
 
   thead th:hover { color: #334155; }
