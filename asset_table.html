@@ -134,9 +134,26 @@
     border-radius: 8px;
     overflow-x: auto;
     overflow-y: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 4px;
     -webkit-overflow-scrolling: touch;
+    position: relative;
   }
+
+  /* Always show scrollbar */
+  .table-wrap::-webkit-scrollbar { height: 8px; }
+  .table-wrap::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+  .table-wrap::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+  .table-wrap::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+  .scroll-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    text-align: right;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .scroll-hint span { letter-spacing: -2px; }
 
   table {
     width: 100%;
@@ -340,6 +357,8 @@
     </table>
   </div>
 
+  <div class="scroll-hint" id="scrollHint">Scroll right for more columns <span>&rsaquo;&rsaquo;</span></div>
+
   <div class="sources">
     <strong>Source:</strong> U.S. Energy Information Administration, Form EIA-861; U.S. Census Bureau, American Community Survey 1-Year Estimates (Table B19013). Period: 2014&ndash;2024. Price growth vs. income growth&nbsp;= electricity price % change &minus; median household income % change (percentage points). Electricity burden&nbsp;= annual electric bill &divide; median household income.
   </div>
@@ -527,6 +546,18 @@ document.getElementById('pageInput').addEventListener('change', (e) => {
 });
 
 render();
+
+// Show scroll hint when table overflows
+const wrap = document.querySelector('.table-wrap');
+const hint = document.getElementById('scrollHint');
+function checkScroll() {
+  hint.style.display = wrap.scrollWidth > wrap.clientWidth ? 'block' : 'none';
+}
+checkScroll();
+window.addEventListener('resize', checkScroll);
+wrap.addEventListener('scroll', () => {
+  if (wrap.scrollLeft > 20) hint.style.display = 'none';
+});
 </script>
 </body>
 </html>
