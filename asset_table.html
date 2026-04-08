@@ -132,12 +132,15 @@
   .table-wrap {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
   }
 
   table {
     width: 100%;
+    min-width: 860px;
     border-collapse: collapse;
     font-size: 14px;
   }
